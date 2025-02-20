@@ -1,6 +1,4 @@
-  - name: Report LCOV
-  # You may pin to the exact commit or the version.
-  # uses: zgosalvez/github-actions-report-lcov@df68834145a4a567247d6a3ea8565c4c39d1fd17
+ - name: Report LCOV
   uses: zgosalvez/github-actions-report-lcov@v4.1.23
   with:
     # The coverage files to scan. For example, `coverage/lcov.*.info`
