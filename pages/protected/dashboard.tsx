@@ -1,7 +1,7 @@
 // pages/protected/dashboard.tsx
 
 import { GetServerSideProps, NextPage } from "next";
-import { getSession, useSession } from "next-auth/react";
+import { getSession, useSession, signOut } from "next-auth/react";
 
 interface DashboardProps {
   // Puedes definir props adicionales si lo requieres
@@ -16,6 +16,9 @@ const Dashboard: NextPage<DashboardProps> = () => {
     <div>
       <h1>Dashboard</h1>
       <p>Bienvenido, {session?.user?.name}</p>
+      <p>Correo: {session?.user?.email}</p>
+      <img src={session?.user?.image as string} alt={session?.user?.name as string} />
+      <button onClick={() => signOut()}>Cerrar sesión</button>
     </div>
   );
 };

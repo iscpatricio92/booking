@@ -2,12 +2,25 @@
 
 import NextAuth, { NextAuthOptions } from "next-auth";
 import FacebookProvider from "next-auth/providers/facebook";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
   providers: [
     FacebookProvider({
       clientId: process.env.FACEBOOK_ID as string,
       clientSecret: process.env.FACEBOOK_SECRET as string,
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID as string,
+      clientSecret: process.env.GOOGLE_SECRET as string,
+      authorization:{
+        params:{
+          scope:"openid email profile",
+          prompt:"consent",
+          access_type:'offline',
+          response_type:'code'
+        }
+      }
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,

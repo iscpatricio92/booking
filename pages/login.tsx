@@ -24,6 +24,10 @@ export default function LoginPage() {
         Iniciar sesión con Facebook
       </button>
       <br />
+      <button onClick={() => signIn("google")}>
+        Iniciar sesión con Google
+      </button>
+      <br />
       <button onClick={() => signOut()}>Cerrar sesión</button>
     </div>
   );

@@ -8,7 +8,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <h1>Bienvenido a la App</h1>
+      <h1>Bienvenido a la Beauty Spa</h1>
       {session ? (
         <>
           <p>Hola, {session.user?.name}</p>
