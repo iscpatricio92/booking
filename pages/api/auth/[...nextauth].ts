@@ -1,9 +1,9 @@
 // pages/api/auth/[...nextauth].js
 
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import FacebookProvider from "next-auth/providers/facebook";
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     FacebookProvider({
       clientId: process.env.FACEBOOK_ID as string,
@@ -11,18 +11,24 @@ export default NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    // Usamos JWT para la sesión (puedes optar por la sesión basada en base de datos)
+    strategy: "jwt",
+  },
   callbacks: {
     async jwt({ token, account }) {
-      // Se puede agregar información adicional al token si es necesario
+      // Si se recibe información de la cuenta, la agregamos al token
       if (account) {
         token.accessToken = account.access_token;
       }
       return token;
     },
     async session({ session, token }) {
-      // Agrega datos del token a la sesión para tenerlos en el cliente
-      session.accessToken = token.accessToken;
+      // Agregamos datos del token a la sesión para tenerlos en el cliente
+      session.accessToken = token.accessToken as string;
       return session;
     },
   },
-});
+};
+
+export default NextAuth(authOptions);
