@@ -1,20 +1,15 @@
- - name: Report LCOV
-  uses: zgosalvez/github-actions-report-lcov@v4.1.23
-  with:
-    # The coverage files to scan. For example, `coverage/lcov.*.info`
-    coverage-files: 
-    # The GitHub artifact name of the generated HTML report. For example, `code-coverage-report`. _Note:_ When downloading, it will be extracted in an `html` directory. Optional. Default: `` (Skips uploading of artifacts)
-    artifact-name: # optional
-    # The minimum coverage to pass the check. Optional. Default: `0` (always passes)
-    minimum-coverage: # optional, default is 0
-    # Set the GitHub token to have the action comment the coverage summary in the pull request. This token is provided by Actions, you do not need to create your own token. Optional. Default: ``
-    github-token: # optional
-    # The working directory containing the source files referenced in the LCOV files. Optional. Default: `./`
-    working-directory: # optional
-    # A prefix before the title "LCOV of commit...". Optional. Default: ``
-    title-prefix: # optional
-    # Custom text appended to the code coverage comment in the pull request. Optional. Default: ``
-    additional-message: # optional
-    # Set to `true` to update the previous code coverage comment if such exists. When set to `false`, a new comment is always created. Optional. Default: `false`
-    update-comment: # optional, default is false
-          
+name: Coverage Report
+
+on: [push, pull_request]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run coverage reporter
+        uses: romeovs/lcov-reporter-action@v0.2.16
+        with:
+          lcov-file: /coverage/lcov.info
