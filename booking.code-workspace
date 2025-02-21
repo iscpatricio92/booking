@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "."
+		} /* ,
+		{
+			"path": "../another-folder" // Add more folders if needed
+		} */
+	],
+	"settings": {
+		"editor.tabSize": 2, // Set the tab size to 2 spaces
+		"files.exclude": {
+			"**/.git": true,
+			"**/.DS_Store": true
+		},
+		"files.autoSave": "onFocusChange", // Automatically save files when focus changes
+		"terminal.integrated.shell.osx": "/bin/zsh" // Set the default terminal shell for macOS
+	},
+	"extensions": {
+		"recommendations": [
+			"esbenp.prettier-vscode", // Prettier extension for code formatting
+			"dbaeumer.vscode-eslint" // ESLint extension for linting
+		]
+	}
+}

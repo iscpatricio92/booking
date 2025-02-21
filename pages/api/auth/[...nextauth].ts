@@ -1,8 +1,8 @@
-// pages/api/auth/[...nextauth].js
-
+import { supabase } from "@/lib/supabaseClient";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
+
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -25,19 +25,40 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    // Usamos JWT para la sesión (puedes optar por la sesión basada en base de datos)
     strategy: "jwt",
   },
   callbacks: {
+    async signIn({ user, account, profile }) {
+            // Determinar el proveedor y obtener el ID del proveedor
+      const provider = account?.provider ?? '';
+      const provider_id = profile?.sub ?? '';
+      const access_token = account?.access_token ?? null;
+      const refresh_token = account?.refresh_token ?? null;
+      // save or update user on Supabase
+      const { error } = await supabase
+        .from('users')
+        .upsert({
+          email: user.email,
+          name: user.name,
+          provider,
+          provider_id,
+          access_token,
+          refresh_token,
+        }, { onConflict: 'email' });
+        
+      if (error) {
+        console.error('Error al guardar el usuario en Supabase:', error);
+        return false;
+      }
+      return true;
+    },
     async jwt({ token, account }) {
-      // Si se recibe información de la cuenta, la agregamos al token
       if (account) {
         token.accessToken = account.access_token;
       }
       return token;
     },
     async session({ session, token }) {
-      // Agregamos datos del token a la sesión para tenerlos en el cliente
       session.accessToken = token.accessToken as string;
       return session;
     },

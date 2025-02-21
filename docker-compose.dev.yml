@@ -1,0 +1,18 @@
+services:
+  db:
+    image: supabase/postgres:14.1.0
+    container_name: booking-db
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5436:5432"
+    volumes:
+      - ./supabase-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

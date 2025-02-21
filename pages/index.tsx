@@ -17,7 +17,7 @@ export default function HomePage() {
           </Link>
         </>
       ) : (
-        <Link href="/login">
+        <Link href="/sign-in">
           Iniciar sesión
         </Link>
       )}

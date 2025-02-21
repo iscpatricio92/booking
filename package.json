@@ -4,7 +4,12 @@
 	"description": "Booking app",
 	"private": true,
 	"scripts": {
-		"dev": "next dev",
+		"docker:up": "docker-compose -f docker-compose.dev.yml up -d",
+		"docker:down": "docker-compose -f docker-compose.dev.yml down",
+		"dev": "concurrently \"pnpm run docker:up \" \"next dev\"",
+		"db:dump": "supabase db dump --schema-only > supabase-schema.sql",
+		"migration:new": "supabase migration new",
+		"migration:run": "supabase migration up",
 		"build": "next build",
 		"start": "next start",
 		"test": "jest",
@@ -28,15 +33,22 @@
 		"@types/jest": "^29.5.14",
 		"@types/node": "^22.13.4",
 		"@types/react": "19.0.10",
+		"concurrently": "^9.1.2",
 		"identity-obj-proxy": "^3.0.0",
 		"jest": "^29.7.0",
 		"jest-environment-jsdom": "^29.7.0",
-		"postcss": "^8.4.29",
-		"tailwindcss": "^3.3.3",
+		"postcss": "^8.5.3",
+		"supabase": "^2.12.1",
+		"tailwindcss": "^3.4.17",
 		"ts-jest": "^29.2.5",
 		"typescript": "^5.7.3"
 	},
 	"engines": {
 		"node": ">=20.0.0"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"supabase"
+		]
 	}
 }
