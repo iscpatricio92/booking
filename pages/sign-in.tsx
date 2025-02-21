@@ -1,10 +1,8 @@
-// pages/login.tsx
-
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function LoginPage() {
+export default function SignInPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 

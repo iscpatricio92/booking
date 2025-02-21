@@ -23,3 +23,6 @@ next-env.d.ts
 # Test
 coverage/*
 !/coverage/lcov.info
+
+#supabase
+supabase-data/
