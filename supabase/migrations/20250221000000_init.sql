@@ -139,70 +139,160 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
 ALTER TABLE "public"."users" OWNER TO "postgres";
 
 
-ALTER TABLE ONLY "public"."permissions"
-    ADD CONSTRAINT "permissions_name_key" UNIQUE ("name");
+-- Para la restricción UNIQUE en permissions (permissions_name_key)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'permissions_name_key'
+  ) THEN
+    ALTER TABLE ONLY "public"."permissions"
+      ADD CONSTRAINT "permissions_name_key" UNIQUE ("name");
+  END IF;
+END $$;
 
 
-
-ALTER TABLE ONLY "public"."permissions"
-    ADD CONSTRAINT "permissions_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."role_permissions"
-    ADD CONSTRAINT "role_permissions_pkey" PRIMARY KEY ("role_id", "permission_id");
-
-
-
-ALTER TABLE ONLY "public"."roles"
-    ADD CONSTRAINT "roles_name_key" UNIQUE ("name");
+-- Para la clave primaria en permissions (permissions_pkey)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'permissions_pkey'
+  ) THEN
+    ALTER TABLE ONLY "public"."permissions"
+      ADD CONSTRAINT "permissions_pkey" PRIMARY KEY ("id");
+  END IF;
+END $$;
 
 
-
-ALTER TABLE ONLY "public"."roles"
-    ADD CONSTRAINT "roles_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."user_roles"
-    ADD CONSTRAINT "user_roles_pkey" PRIMARY KEY ("user_id", "role_id");
-
-
-
-ALTER TABLE ONLY "public"."users"
-    ADD CONSTRAINT "users_email_key" UNIQUE ("email");
+-- Para la clave primaria en role_permissions (role_permissions_pkey)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'role_permissions_pkey'
+  ) THEN
+    ALTER TABLE ONLY "public"."role_permissions"
+      ADD CONSTRAINT "role_permissions_pkey" PRIMARY KEY ("role_id", "permission_id");
+  END IF;
+END $$;
 
 
+-- Para la restricción UNIQUE en roles (roles_name_key)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'roles_name_key'
+  ) THEN
+    ALTER TABLE ONLY "public"."roles"
+      ADD CONSTRAINT "roles_name_key" UNIQUE ("name");
+  END IF;
+END $$;
 
-ALTER TABLE ONLY "public"."users"
-    ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 
+-- Para la clave primaria en roles (roles_pkey)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'roles_pkey'
+  ) THEN
+    ALTER TABLE ONLY "public"."roles"
+      ADD CONSTRAINT "roles_pkey" PRIMARY KEY ("id");
+  END IF;
+END $$;
+
+-- Para la clave primaria en user_roles (user_roles_pkey)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'user_roles_pkey'
+  ) THEN
+    ALTER TABLE ONLY "public"."user_roles"
+      ADD CONSTRAINT "user_roles_pkey" PRIMARY KEY ("user_id", "role_id");
+  END IF;
+END $$;
+
+
+-- Para la restricción UNIQUE en users (users_email_key)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'users_email_key'
+  ) THEN
+    ALTER TABLE ONLY "public"."users"
+      ADD CONSTRAINT "users_email_key" UNIQUE ("email");
+  END IF;
+END $$;
+
+-- Para la clave primaria en users (users_pkey)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'users_pkey'
+  ) THEN
+    ALTER TABLE ONLY "public"."users"
+      ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
+  END IF;
+END $$;
 
 
 CREATE OR REPLACE TRIGGER "update_user_updated_at" BEFORE UPDATE ON "public"."users" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at_column"();
 
 
+-- Para la restricción de clave foránea en role_permissions (role_permissions_permission_id_fkey)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'role_permissions_permission_id_fkey'
+  ) THEN
+    ALTER TABLE ONLY "public"."role_permissions"
+      ADD CONSTRAINT "role_permissions_permission_id_fkey" FOREIGN KEY ("permission_id") REFERENCES "public"."permissions"("id") ON DELETE CASCADE;
+  END IF;
+END $$;
 
-ALTER TABLE ONLY "public"."role_permissions"
-    ADD CONSTRAINT "role_permissions_permission_id_fkey" FOREIGN KEY ("permission_id") REFERENCES "public"."permissions"("id") ON DELETE CASCADE;
+-- Para la restricción de clave foránea en role_permissions (role_permissions_role_id_fkey)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'role_permissions_role_id_fkey'
+  ) THEN
+    ALTER TABLE ONLY "public"."role_permissions"
+      ADD CONSTRAINT "role_permissions_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE CASCADE;
+  END IF;
+END $$;
 
 
-
-ALTER TABLE ONLY "public"."role_permissions"
-    ADD CONSTRAINT "role_permissions_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."user_roles"
-    ADD CONSTRAINT "user_roles_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."user_roles"
-    ADD CONSTRAINT "user_roles_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+-- Para la restricción de clave foránea en user_roles (user_roles_role_id_fkey)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'user_roles_role_id_fkey'
+  ) THEN
+    ALTER TABLE ONLY "public"."user_roles"
+      ADD CONSTRAINT "user_roles_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE CASCADE;
+  END IF;
+END $$;
 
 
-
+-- Para la restricción de clave foránea en user_roles (user_roles_user_id_fkey)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'user_roles_user_id_fkey'
+  ) THEN
+    ALTER TABLE ONLY "public"."user_roles"
+      ADD CONSTRAINT "user_roles_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+  END IF;
+END $$;
 
 
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
