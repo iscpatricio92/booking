@@ -132,7 +132,8 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
     "refresh_token" "text",
     "role" "text" DEFAULT 'cliente'::"text",
     "status" "text" DEFAULT 'activo'::"text",
-    "last_login" timestamp with time zone
+    "last_login" timestamp with time zone,
+    PRIMARY KEY ("id")
 );
 
 
